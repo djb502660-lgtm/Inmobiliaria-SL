@@ -41,6 +41,9 @@ class Property extends Model
     public function scopeApproved($query)
     {
         return $query->where('status', 'approved')
-            ->where('operation_closed', false);
+            ->where(function ($q) {
+                $q->whereNull('operation_closed')
+                    ->orWhere('operation_closed', false);
+            });
     }
 }

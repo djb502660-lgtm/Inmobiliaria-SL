@@ -14,60 +14,32 @@
 @endsection
 
 @section('content')
-    <section id="inicio" class="bg-white">
-        <div class="max-w-6xl mx-auto px-6 pt-16 pb-24">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-14 items-center">
-                <div>
-                    <h1 class="home-hero-title text-4xl md:text-[42px] leading-tight font-bold uppercase text-gray-900">
+    <section class="relative">
+        <div class="absolute inset-0">
+            <div class="h-full w-full bg-cover bg-center"
+                style="background-image: url('{{ asset('images/home-hero.jpg') }}');">
+            </div>
+            <div class="absolute inset-0 bg-black/55"></div>
+        </div>
+
+        <div class="relative max-w-5xl mx-auto px-6 pt-24 pb-24">
+            <div class="min-h-[60vh] flex flex-col items-center justify-center text-center">
+                <div class="max-w-2xl">
+                    <h1 class="home-hero-title text-4xl md:text-[44px] leading-tight font-bold text-white uppercase">
                         Encuentra tu propiedad ideal<br>
                         en San Lorenzo
                     </h1>
-                    <p class="mt-8 text-[15px] leading-7 text-gray-700 max-w-xl">
+                    <p class="mt-5 text-[15px] leading-7 text-gray-100 max-w-xl mx-auto">
                         Las mejores opciones en casas, departamentos y locales en venta o arriendo,
                         y terrenos exclusivos en venta.
                     </p>
-                </div>
-
-                <div class="flex md:justify-end">
-                    <div class="flex items-center gap-4">
-                        <img src="{{ asset('images/brand-mark.svg') }}" alt="Inmobiliaria SL" class="h-28 w-28">
-                        <div class="leading-tight">
-                            <div class="text-2xl font-bold text-blue-700">Inmobiliaria-SL</div>
-                            <div class="text-sm font-semibold text-gray-600">San Lorenzo</div>
-                        </div>
+                    <div class="mt-8">
+                        <a href="{{ route('properties.index') }}"
+                            class="inline-flex items-center px-8 py-3 rounded-full bg-emerald-500 text-white text-sm font-semibold shadow-lg hover:bg-emerald-600 transition">
+                            CONOCER MÁS
+                        </a>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="propiedades" class="bg-white">
-        <div class="max-w-6xl mx-auto px-6 pb-16">
-            <div class="border-t border-gray-100 pt-10 text-sm text-gray-500">
-                Próximamente: listado de propiedades destacadas.
-            </div>
-        </div>
-    </section>
-
-    <section id="nosotros" class="bg-white">
-        <div class="max-w-6xl mx-auto px-6 pb-16">
-            <div class="border-t border-gray-100 pt-10">
-                <h2 class="text-lg font-semibold text-gray-900">Nosotros</h2>
-                <p class="mt-3 text-sm text-gray-600 max-w-2xl leading-6">
-                    Somos una inmobiliaria enfocada en ayudarte a encontrar la propiedad ideal en San Lorenzo, con atención clara,
-                    rápida y transparente.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <section id="contacto" class="bg-white">
-        <div class="max-w-6xl mx-auto px-6 pb-20">
-            <div class="border-t border-gray-100 pt-10">
-                <h2 class="text-lg font-semibold text-gray-900">Contacto</h2>
-                <p class="mt-3 text-sm text-gray-600 max-w-2xl leading-6">
-                    Déjanos tus datos y te contactamos. (Aquí puedes conectar luego un formulario o WhatsApp.)
-                </p>
             </div>
         </div>
     </section>

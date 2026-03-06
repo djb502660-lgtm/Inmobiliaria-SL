@@ -51,14 +51,10 @@
 
                 <!-- Center Links -->
                 <div class="hidden md:flex space-x-8">
-                    <a href="{{ route('home') }}#inicio"
+                    <a href="{{ route('home') }}"
                         class="text-gray-500 hover:text-gray-900 text-sm font-medium transition">Inicio</a>
-                    <a href="{{ route('home') }}#propiedades"
+                    <a href="{{ route('properties.index') }}"
                         class="text-gray-500 hover:text-gray-900 text-sm font-medium transition">Propiedades</a>
-                    <a href="{{ route('home') }}#nosotros"
-                        class="text-gray-500 hover:text-gray-900 text-sm font-medium transition">Nosotros</a>
-                    <a href="{{ route('home') }}#contacto"
-                        class="text-gray-500 hover:text-gray-900 text-sm font-medium transition">Contacto</a>
                 </div>
 
                 <!-- Right Buttons -->
@@ -120,20 +116,22 @@
     </footer>
 
     {{-- Chat flotante con asistente inteligente --}}
-    <div x-data="{ open: false, messages: [] }"
-        class="fixed bottom-6 right-6 z-50">
-        <button type="button" @click="open = !open"
+    <div class="fixed bottom-6 right-6 z-50">
+        <button type="button" id="assistant-toggle-btn"
             class="bg-primary text-white rounded-full shadow-lg px-4 py-2 flex items-center gap-2 hover:bg-blue-700 transition">
             <span class="text-sm font-semibold">Ayuda</span>
         </button>
 
-        <div x-show="open" x-cloak
-            class="mt-3 w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden">
+        <div id="assistant-panel"
+            class="mt-3 w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden hidden">
             <div class="px-4 py-3 bg-primary text-white flex items-center justify-between">
                 <div>
                     <div class="text-sm font-semibold">Asistente Inmobiliaria-SL</div>
                     <div class="text-[11px] text-blue-100">Pregúntame cómo usar el sistema</div>
                 </div>
+                <button type="button" id="assistant-close-btn" class="text-white/80 hover:text-white text-lg leading-none">
+                    &times;
+                </button>
             </div>
             <div class="flex-1 max-h-64 overflow-y-auto p-3 space-y-2 text-sm" id="assistant-messages">
                 <div class="bg-gray-100 text-gray-800 rounded-xl px-3 py-2">
@@ -154,10 +152,25 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const toggleBtn = document.getElementById('assistant-toggle-btn');
+            const panel = document.getElementById('assistant-panel');
+            const closeBtn = document.getElementById('assistant-close-btn');
             const form = document.getElementById('assistant-chat-form');
             const input = document.getElementById('assistant-question');
             const messagesBox = document.getElementById('assistant-messages');
             const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+            if (toggleBtn && panel) {
+                toggleBtn.addEventListener('click', function () {
+                    panel.classList.toggle('hidden');
+                });
+            }
+
+            if (closeBtn && panel) {
+                closeBtn.addEventListener('click', function () {
+                    panel.classList.add('hidden');
+                });
+            }
 
             if (form && input && messagesBox && token) {
                 form.addEventListener('submit', async function (e) {
