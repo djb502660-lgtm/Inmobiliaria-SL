@@ -29,7 +29,8 @@ class AuthController extends Controller
                 return redirect()->intended('admin/dashboard');
             }
 
-            return redirect()->intended('dashboard');
+            // Usuarios normales: después de iniciar sesión, ver listado de propiedades publicadas
+            return redirect()->intended(route('properties.index'));
         }
 
         return back()->withErrors([
@@ -59,7 +60,8 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect('/dashboard');
+        // Después de registrarse, mostrar inmediatamente las propiedades publicadas
+        return redirect()->route('properties.index');
     }
 
     public function logout(Request $request)

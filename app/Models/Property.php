@@ -12,6 +12,7 @@ class Property extends Model
     protected $fillable = [
         'user_id',
         'category_id',
+        'operation_closed',
         'title',
         'description',
         'address',
@@ -39,6 +40,7 @@ class Property extends Model
 
     public function scopeApproved($query)
     {
-        return $query->where('status', 'approved');
+        return $query->where('status', 'approved')
+            ->where('operation_closed', false);
     }
 }

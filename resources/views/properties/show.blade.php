@@ -93,18 +93,27 @@
                         </div>
                     </div>
 
-                    <div class="mt-8">
-                        <button
-                            class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl transition shadow-lg shadow-green-500/30">
-                            Contactar Vendedor
-                        </button>
+                    <div class="mt-8 space-y-3">
                         @auth
-                            @if(Auth::id() == $property->user_id)
+                            @if(Auth::id() !== $property->user_id)
+                                <form action="{{ route('properties.contact', $property) }}" method="POST">
+                                    @csrf
+                                    <button type="submit"
+                                        class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl transition shadow-lg shadow-green-500/30">
+                                        Contactar Vendedor
+                                    </button>
+                                </form>
+                            @else
                                 <a href="{{ route('properties.edit', $property) }}"
-                                    class="block w-full text-center mt-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-3 px-4 rounded-xl transition">
+                                    class="block w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-3 px-4 rounded-xl transition">
                                     Editar Propiedad
                                 </a>
                             @endif
+                        @else
+                            <a href="{{ route('login') }}"
+                                class="block w-full text-center bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl transition shadow-lg shadow-green-500/30">
+                                Inicia sesión para contactar al vendedor
+                            </a>
                         @endauth
                     </div>
                 </div>

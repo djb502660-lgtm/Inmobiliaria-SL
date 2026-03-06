@@ -41,7 +41,12 @@
                                     <div class="text-xs text-gray-500 mt-1 truncate w-48">{{ $property->address }}</div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    @if($property->status == 'approved')
+                                    @if($property->operation_closed)
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-200 text-gray-800">
+                                            Operación cerrada
+                                        </span>
+                                    @elseif($property->status == 'approved')
                                         <span
                                             class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                             Publicado
@@ -63,8 +68,17 @@
                                 <td class="px-6 py-4">{{ $property->created_at->format('d/m/Y') }}</td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex justify-end space-x-3">
-                                        <a href="{{ route('properties.edit', $property) }}"
-                                            class="text-blue-600 hover:text-blue-900 font-medium">Editar</a>
+                                        @if(! $property->operation_closed)
+                                            <a href="{{ route('properties.edit', $property) }}"
+                                                class="text-blue-600 hover:text-blue-900 font-medium">Editar</a>
+                                            <form action="{{ route('properties.close', $property) }}" method="POST"
+                                                onsubmit="return confirm('¿Marcar esta propiedad como operación cerrada? Ya no se mostrará al público.');">
+                                                @csrf
+                                                <button type="submit"
+                                                    class="text-amber-600 hover:text-amber-800 font-medium">Marcar cerrada
+                                                </button>
+                                            </form>
+                                        @endif
                                         <form action="{{ route('properties.destroy', $property) }}" method="POST"
                                             onsubmit="return confirm('¿Estás seguro de eliminar esta propiedad?');">
                                             @csrf

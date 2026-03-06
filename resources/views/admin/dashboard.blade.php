@@ -9,7 +9,7 @@
     </div>
 
     <!-- Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
             <div class="text-gray-500 text-sm font-medium uppercase tracking-wide">Usuarios Registrados</div>
             <div class="mt-2 text-3xl font-bold text-gray-900">{{ $totalUsers }}</div>
@@ -21,6 +21,10 @@
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
             <div class="text-gray-500 text-sm font-medium uppercase tracking-wide">Pendientes de Aprobación</div>
             <div class="mt-2 text-3xl font-bold text-secondary">{{ $pendingProperties->count() }}</div>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <div class="text-gray-500 text-sm font-medium uppercase tracking-wide">Operaciones Cerradas</div>
+            <div class="mt-2 text-3xl font-bold text-gray-900">{{ $closedPropertiesCount }}</div>
         </div>
     </div>
 
@@ -89,6 +93,73 @@
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <p>No hay propiedades pendientes de aprobación.</p>
+            </div>
+        @endif
+    </div>
+
+    <!-- Recent Conversations -->
+    <div class="mt-10 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-gray-800">Últimas conversaciones (chat privado)</h3>
+        </div>
+
+        @if($recentConversations->count() > 0)
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-gray-600">
+                    <thead class="bg-gray-50 text-gray-500 font-medium uppercase tracking-wider">
+                        <tr>
+                            <th class="px-6 py-3">Propiedad / Tipo</th>
+                            <th class="px-6 py-3">Comprador</th>
+                            <th class="px-6 py-3">Vendedor</th>
+                            <th class="px-6 py-3">Última actividad</th>
+                            <th class="px-6 py-3">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @foreach($recentConversations as $conversation)
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-6 py-4">
+                                    @if($conversation->is_assistant)
+                                        <span class="text-xs font-semibold px-2 py-1 rounded-full bg-indigo-100 text-indigo-700">
+                                            Chat asistente
+                                        </span>
+                                    @elseif($conversation->property)
+                                        <div class="font-medium text-gray-900">
+                                            <a href="{{ route('properties.show', $conversation->property) }}"
+                                                class="hover:text-primary hover:underline">
+                                                {{ $conversation->property->title }}
+                                            </a>
+                                        </div>
+                                        <div class="text-xs text-gray-500">
+                                            ID #{{ $conversation->property->id }}
+                                        </div>
+                                    @else
+                                        <span class="text-gray-500 text-sm">Sin propiedad asociada</span>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ optional($conversation->buyer)->name ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ optional($conversation->seller)->name ?? ($conversation->is_assistant ? 'Asistente' : '-') }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ $conversation->updated_at->format('d/m/Y H:i') }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    <a href="{{ route('conversations.show', $conversation) }}"
+                                        class="text-primary hover:text-blue-800 font-medium text-xs">
+                                        Ver chat
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <div class="px-6 py-8 text-center text-gray-500 text-sm">
+                Aún no hay conversaciones registradas.
             </div>
         @endif
     </div>

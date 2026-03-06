@@ -36,7 +36,9 @@ class PropertyController extends Controller
     // Public detail
     public function show(Property $property)
     {
-        if ($property->status !== 'approved' && (!Auth::check() || (Auth::user()->id !== $property->user_id && !Auth::user()->isAdmin()))) {
+        $isOwnerOrAdmin = Auth::check() && (Auth::id() === $property->user_id || Auth::user()->isAdmin());
+
+        if (($property->status !== 'approved' || $property->operation_closed) && ! $isOwnerOrAdmin) {
             abort(404);
         }
 
@@ -125,5 +127,18 @@ class PropertyController extends Controller
 
         $property->delete();
         return back()->with('success', 'Propiedad eliminada.');
+    }
+
+    public function close(Property $property)
+    {
+        if (Auth::id() !== $property->user_id) {
+            abort(403);
+        }
+
+        $property->update([
+            'operation_closed' => true,
+        ]);
+
+        return back()->with('success', 'Has marcado esta propiedad como operación cerrada. Ya no aparecerá en el listado público.');
     }
 }
