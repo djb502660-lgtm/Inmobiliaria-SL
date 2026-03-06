@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\AssistantChatController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,6 +38,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/my-properties', [PropertyController::class, 'userProperties'])->name('user.properties');
 
     Route::get('/my-chats', [ConversationController::class, 'index'])->name('conversations.index');
+
+    // Perfil de usuario
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
     Route::get('/properties/create/new', [PropertyController::class, 'create'])->name('properties.create'); // Specific path to avoid conflict with show
     Route::post('/properties', [PropertyController::class, 'store'])->name('properties.store');

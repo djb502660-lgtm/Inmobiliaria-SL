@@ -3,10 +3,28 @@
 @section('title', 'Panel de Administración')
 
 @section('content')
-    <div class="mb-8">
+    <div class="mb-6">
         <h1 class="text-3xl font-bold text-gray-800">Panel de Administración</h1>
         <p class="text-gray-600">Gestiona las publicaciones y usuarios de la plataforma.</p>
     </div>
+
+    @if($pendingProperties->count() > 0)
+        <div class="mb-8 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 flex items-start gap-3 text-sm">
+            <div
+                class="mt-0.5 h-6 w-6 flex items-center justify-center rounded-full bg-amber-500 text-white text-xs font-bold">
+                !
+            </div>
+            <div>
+                <p class="text-amber-900 font-semibold">
+                    Tienes {{ $pendingProperties->count() }} propiedad(es) pendiente(s) de aprobación.
+                </p>
+                <p class="text-amber-800">
+                    Revisa la sección de <span class="font-medium">Solicitudes de Publicación Pendientes</span> para
+                    aprobar o rechazar las nuevas publicaciones creadas por los propietarios.
+                </p>
+            </div>
+        </div>
+    @endif
 
     <!-- Stats -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">

@@ -60,9 +60,31 @@
                 <!-- Right Buttons -->
                 <div class="flex items-center space-x-4">
                     @auth
-                        <span class="text-sm text-gray-600 hidden sm:block">{{ Auth::user()->name }}</span>
-                        <a href="{{ Auth::user()->isAdmin() ? route('admin.dashboard') : route('user.properties') }}"
-                            class="text-gray-600 hover:text-gray-900 text-sm font-medium">Dashboard</a>
+                        @php
+                            $isAdmin = Auth::user()->isAdmin();
+                            $pendingForAdmin = $isAdmin ? \App\Models\Property::where('status', 'pending')->count() : 0;
+                        @endphp
+                        <a href="{{ route('profile.show') }}"
+                            class="text-sm text-gray-600 hidden sm:block hover:text-gray-900 font-medium">
+                            {{ Auth::user()->name }}
+                        </a>
+
+                        @if($isAdmin)
+                            <a href="{{ route('admin.dashboard') }}"
+                                class="relative text-gray-600 hover:text-gray-900 text-sm font-medium">
+                                Administrador
+                                @if($pendingForAdmin > 0)
+                                    <span
+                                        class="absolute -top-2 -right-3 inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-red-500 text-white">
+                                        {{ $pendingForAdmin }}
+                                    </span>
+                                @endif
+                            </a>
+                        @else
+                            <a href="{{ route('user.properties') }}"
+                                class="text-gray-600 hover:text-gray-900 text-sm font-medium">Mis propiedades</a>
+                        @endif
+
                         <a href="{{ route('conversations.index') }}"
                             class="text-gray-600 hover:text-gray-900 text-sm font-medium">Mis chats</a>
                         <form method="POST" action="{{ route('logout') }}">
