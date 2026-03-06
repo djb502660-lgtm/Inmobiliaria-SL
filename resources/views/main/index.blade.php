@@ -17,7 +17,7 @@
     <section class="relative">
         <div class="absolute inset-0">
             <div class="h-full w-full bg-cover bg-center"
-                style="background-image: url('{{ asset('images/home-hero.jpg') }}');">
+                style="background-image: url('{{ asset('images/home-hero.jpg.jpeg') }}');">
             </div>
             <div class="absolute inset-0 bg-black/55"></div>
         </div>
