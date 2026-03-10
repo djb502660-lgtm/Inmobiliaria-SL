@@ -113,6 +113,20 @@
                 <span class="block sm:inline">{{ session('success') }}</span>
             </div>
         @endif
+        @if(session('status'))
+            <div class="mb-4 bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded relative" role="alert">
+                <span class="block sm:inline">{{ session('status') }}</span>
+            </div>
+        @endif
+
+        @auth
+            @if(!Auth::user()->hasVerifiedEmail())
+                <div class="mb-4 bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded relative flex items-center justify-between flex-wrap gap-2">
+                    <span class="text-sm">Verifica tu correo electrónico para activar todas las funciones.</span>
+                    <a href="{{ route('verification.notice') }}" class="text-sm font-medium text-amber-700 hover:text-amber-900 underline">Verificar correo</a>
+                </div>
+            @endif
+        @endauth
 
         @yield('content')
     </main>

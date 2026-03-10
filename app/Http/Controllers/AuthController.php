@@ -58,10 +58,13 @@ class AuthController extends Controller
             'role' => 'user', // Default role
         ]);
 
+        $user->sendEmailVerificationNotification();
+
         Auth::login($user);
 
         // Después de registrarse, mostrar inmediatamente las propiedades publicadas
-        return redirect()->route('properties.index');
+        return redirect()->route('properties.index')
+            ->with('status', 'Cuenta creada. Revisa tu correo para verificar tu cuenta.');
     }
 
     public function logout(Request $request)

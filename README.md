@@ -97,11 +97,14 @@ php artisan key:generate
 
 Editar `.env` para apuntar a tu base de datos (DB_DATABASE, DB_USERNAME, DB_PASSWORD).
 
-4. Ejecutar migraciones:
+4. Ejecutar migraciones y datos iniciales:
 
 ```bash
 php artisan migrate
+php artisan db:seed
 ```
+
+> Los seeders crean: usuario admin (`admin@example.com` / `password`), usuario demo (`user@example.com` / `password`), categorías y propiedades de ejemplo.
 
 5. Iniciar servidor de desarrollo:
 

@@ -109,14 +109,36 @@ class PropertyController extends Controller
             'address' => 'required|string',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
+            'delete_images' => 'nullable|array',
+            'delete_images.*' => 'integer|exists:property_images,id',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        // Eliminar imágenes marcadas
+        if (!empty($validated['delete_images'])) {
+            $toDelete = $property->images()->whereIn('id', $validated['delete_images'])->get();
+            foreach ($toDelete as $img) {
+                Storage::disk('public')->delete($img->image_path);
+                $img->delete();
+            }
+        }
+
+        // Añadir nuevas imágenes (máx 5 en total)
+        $currentCount = $property->images()->count();
+        if ($request->hasFile('images')) {
+            $remainingSlots = 5 - $currentCount;
+            $newFiles = array_slice($request->file('images'), 0, max(0, $remainingSlots));
+            foreach ($newFiles as $image) {
+                $path = $image->store('properties', 'public');
+                $property->images()->create(['image_path' => $path]);
+            }
+        }
+
+        unset($validated['delete_images'], $validated['images']);
+        $validated['status'] = 'pending'; // Requiere nueva aprobación del admin
         $property->update($validated);
 
-        // Reset status to pending on update? Usually yes.
-        // $property->update(['status' => 'pending']); 
-
-        return redirect()->route('user.properties')->with('success', 'Propiedad actualizada.');
+        return redirect()->route('user.properties')->with('success', 'Propiedad actualizada. Volverá a estar pendiente de aprobación del administrador.');
     }
 
     public function destroy(Property $property)

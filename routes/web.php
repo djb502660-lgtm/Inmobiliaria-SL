@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EmailVerificationController;
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\AssistantChatController;
@@ -19,18 +21,33 @@ Route::get('/', [App\Http\Controllers\Main\HomeController::class, 'index'])->nam
 Route::get('/properties', [PropertyController::class, 'index'])->name('properties.index');
 Route::get('/properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
 
-// Assistant chat (visible en páginas públicas)
-Route::post('/assistant-chat', [AssistantChatController::class, 'handle'])->name('assistant.chat');
+// Assistant chat (throttle: 10 peticiones/min para evitar abuso)
+Route::post('/assistant-chat', [AssistantChatController::class, 'handle'])->name('assistant.chat')->middleware('throttle:10,1');
 
-// Auth Routes
+// Auth Routes (throttle: 5 intentos por minuto para prevenir fuerza bruta)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
+
+    // Recuperación de contraseña
+    Route::get('/forgot-password', [PasswordResetController::class, 'showForgotForm'])->name('password.request');
+    Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->name('password.email')->middleware('throttle:3,1');
+    Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.update');
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+
+// Verificación de email (opcional: no bloquea acceso)
+Route::middleware('auth')->group(function () {
+    Route::get('/email/verify', [EmailVerificationController::class, 'notice'])->name('verification.notice');
+    Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
+        ->middleware(['auth', 'signed'])->name('verification.verify');
+    Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])
+        ->middleware('throttle:6,1')->name('verification.send');
+});
 
 // User Routes
 Route::middleware('auth')->group(function () {
@@ -60,7 +77,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin Routes
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::post('/approve/{property}', [AdminController::class, 'approveProperty'])->name('admin.approve');
     Route::post('/reject/{property}', [AdminController::class, 'rejectProperty'])->name('admin.reject');

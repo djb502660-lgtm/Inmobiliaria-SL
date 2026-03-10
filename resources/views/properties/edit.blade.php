@@ -57,14 +57,41 @@
                     </div>
                 </div>
 
-                <!-- Description -->
+                <!-- Description & Images -->
                 <div>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Detalles</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Detalles y Multimedia</h3>
                     <div class="space-y-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Descripción Detallada</label>
                             <textarea name="description" rows="4" required
                                 class="w-full rounded-lg border-gray-300 focus:border-primary focus:ring focus:ring-primary/20 transition">{{ $property->description }}</textarea>
+                        </div>
+
+                        @if($property->images->isNotEmpty())
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Imágenes actuales</label>
+                            <div class="flex flex-wrap gap-4">
+                                @foreach($property->images as $image)
+                                <div class="flex flex-col items-center gap-1">
+                                    <img src="{{ Storage::url($image->image_path) }}" alt="Imagen propiedad"
+                                        class="h-24 w-24 object-cover rounded-lg border border-gray-200">
+                                    <label class="flex items-center gap-1 cursor-pointer text-sm text-red-600 hover:text-red-700">
+                                        <input type="checkbox" name="delete_images[]" value="{{ $image->id }}"
+                                            class="rounded border-gray-300 text-red-600 focus:ring-red-500">
+                                        <span>Eliminar</span>
+                                    </label>
+                                </div>
+                                @endforeach
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Marca para eliminar. Máximo 5 imágenes en total.</p>
+                        </div>
+                        @endif
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Añadir nuevas imágenes</label>
+                            <input type="file" name="images[]" multiple accept="image/*"
+                                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100 transition">
+                            <p class="text-xs text-gray-500 mt-1">Formatos: JPG, PNG. Máximo 2MB por imagen. Total máx 5.</p>
                         </div>
                     </div>
                 </div>
